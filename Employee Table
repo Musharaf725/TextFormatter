@@ -1,0 +1,94 @@
+Table Creation
+
+CREATE TABLE Employee (
+    emp_id INT PRIMARY KEY,
+    first_name VARCHAR(50) NOT NULL,
+    last_name VARCHAR(50) NOT NULL,
+    email VARCHAR(100) UNIQUE,
+    department VARCHAR(50),
+    salary DECIMAL(10,2),
+    hire_date DATE
+);
+
+Problem 1
+
+1. Insert three employees
+
+INSERT INTO Employee
+    (emp_id, first_name, last_name, email, department, salary, hire_date)
+VALUES
+    (101, 'Aarav', 'Sharma', 'aarav.sharma@example.com', 'IT', 60000.00, '2021-03-15'),
+    (102, 'Priya', 'Patel', 'priya.patel@example.com', 'HR', 52000.00, '2019-11-20'),
+    (103, 'Rahul', 'Verma', 'rahul.verma@example.com', 'IT', 65000.00, '2022-07-10');
+
+2. Increase IT employees’ salaries by 10%
+
+UPDATE Employee
+SET salary = salary * 1.10
+WHERE department = 'IT';
+
+3. Display updated IT salaries
+
+SELECT emp_id, first_name, last_name, salary
+FROM Employee
+WHERE department = 'IT';
+
+Problem 2
+
+1. Delete employees hired before January 1, 2020
+
+DELETE FROM Employee
+WHERE hire_date < '2020-01-01';
+
+2. Display remaining employees ordered by hire date
+
+SELECT
+    emp_id,
+    CONCAT(first_name, ' ', last_name) AS full_name,
+    department,
+    hire_date
+FROM Employee
+ORDER BY hire_date ASC;
+
+Problem 3
+
+1. Add phone_number as NOT NULL
+
+Since the table already has records, add the column as nullable first, populate existing rows, and then make it NOT NULL. This avoids a failure when adding a required column to a populated table.
+
+ALTER TABLE Employee
+ADD COLUMN phone_number VARCHAR(15) NULL;
+
+UPDATE Employee
+SET phone_number = CASE emp_id
+    WHEN 101 THEN '9876543210'
+    WHEN 103 THEN '9123456780'
+    ELSE '9000000000'
+END
+WHERE phone_number IS NULL;
+
+ALTER TABLE Employee
+MODIFY COLUMN phone_number VARCHAR(15) NOT NULL;
+
+These are sample phone numbers. If your table has additional employee rows, assign each row a suitable phone number before running the final ALTER TABLE statement.
+
+2. Keep email unique and set department default to General
+
+The email column was already declared UNIQUE during table creation, so no duplicate UNIQUE constraint needs to be added. Set the default department using this MySQL statement:
+
+ALTER TABLE Employee
+ALTER COLUMN department SET DEFAULT 'General';
+
+Alternative syntax for MySQL environments where needed (use this instead of the statement above, not in addition):
+
+ALTER TABLE Employee
+MODIFY COLUMN department VARCHAR(50) DEFAULT 'General';
+
+3. Describe the table structure
+
+DESCRIBE Employee;
+
+Optional Verification
+
+SELECT * FROM Employee;
+SHOW CREATE TABLE Employee;
